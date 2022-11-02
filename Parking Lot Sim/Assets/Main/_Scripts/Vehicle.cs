@@ -38,7 +38,7 @@ public class Vehicle : MonoBehaviour
     {
         if (collision.gameObject.tag == "Entrance")
         {
-            Debug.Log("Enter...");
+            Debug.Log("Enter... lul");
             IsInGarage = true;
 
             // disable vehicle

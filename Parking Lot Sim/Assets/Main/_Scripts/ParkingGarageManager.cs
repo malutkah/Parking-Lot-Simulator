@@ -20,13 +20,14 @@ public class ParkingGarageManager : MonoBehaviour
     public GameObject GaragePrefab;
     public GameObject ParkingSpacePrefab;
     public GameObject Building;
-    [HideInInspector] public GameObject vehicle;
+    public List<GameObject> AllVehicleInside;
+    [HideInInspector] public GameObject currentlyEnteredVehicle;
     public int floorCount, parkingSpaceCountPerFloor;
     public int VehicleSpawnCount;
 
     private ParkingSpace space;
     private bool canSpawnVehicle;
-    private bool vehicleEntered;
+    private bool hasVehicleEntered;
     private GarageBuilding garageBuilding;
     private int vehicleCount;
 
@@ -44,6 +45,7 @@ public class ParkingGarageManager : MonoBehaviour
         }
 
         garageBuilding = Building.GetComponent<GarageBuilding>();
+        AllVehicleInside = new List<GameObject>();
     }
 
     void Start()
@@ -60,10 +62,11 @@ public class ParkingGarageManager : MonoBehaviour
             StartCoroutine(SpawnVehicle(VehicleSpawnCount));
         }
 
-        if (vehicleEntered)
+        if (hasVehicleEntered)
         {
-            Debug.Log($"Vehicle [{vehicle.GetComponent<Vehicle>().Platenumber}] entered!");
-            vehicleEntered = false;
+            //Debug.Log($"Vehicle [{currentlyEnteredVehicle.GetComponent<Vehicle>().Platenumber}] entered!");
+            AllVehicleInside.Add(currentlyEnteredVehicle);
+            hasVehicleEntered = false;
         }
     }
     #endregion
@@ -168,7 +171,42 @@ public class ParkingGarageManager : MonoBehaviour
 
     public void VehicleEnteredGarage(GameObject v)
     {
-        vehicle = v;
-        vehicleEntered = vehicle != null;
+        currentlyEnteredVehicle = v;
+        hasVehicleEntered = currentlyEnteredVehicle != null;
+    }
+
+    public ParkingSpace ChooseParkingSpaceForVehicle()
+    {
+        // get a random floor that isn't full
+        System.Random fRng = new System.Random();
+        Floor randomFloor = garageBuilding.AllFloors[fRng.Next(garageBuilding.AllFloors.Count)];
+
+        while (randomFloor.IsFloorFull())
+        {
+            // choose another floor
+            fRng = new System.Random();
+            randomFloor = garageBuilding.AllFloors[fRng.Next(garageBuilding.AllFloors.Count)];
+        }
+
+        // then get a random parking space that isn't occupied
+
+        System.Random sRng = new System.Random();
+        GameObject spaceGO = randomFloor.AllParkingSpaces[sRng.Next(garageBuilding.AllFloors.Count)];
+        ParkingSpace space = spaceGO.GetComponent<ParkingSpace>();
+
+        while (space.IsOccupied)
+        {
+            sRng = new System.Random();
+            spaceGO = randomFloor.AllParkingSpaces[sRng.Next(garageBuilding.AllFloors.Count)];
+            space = spaceGO.GetComponent<ParkingSpace>();
+        }
+
+        space.Vehicle = currentlyEnteredVehicle.GetComponent<Vehicle>();
+        space.IsOccupied = true;
+
+        Debug.Log($"Vehicle [{currentlyEnteredVehicle.GetComponent<Vehicle>().Platenumber}] is at Parking space [{space.SpaceName}]");
+
+
+        return space;
     }
 }

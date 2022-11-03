@@ -18,7 +18,7 @@ public class Floor : MonoBehaviour
     {
         bool full = false;
 
-        foreach(GameObject ps in AllParkingSpaces)
+        foreach (GameObject ps in AllParkingSpaces)
         {
             full = ps.GetComponent<ParkingSpace>().IsOccupied;
             if (!full)
@@ -28,6 +28,13 @@ public class Floor : MonoBehaviour
         }
 
         return full;
+    }
+
+    public string GetParkingSpaceName(int index)
+    {
+        ParkingSpace ps = AllParkingSpaces[index].GetComponent<ParkingSpace>();
+
+        return ps.SpaceName;
     }
 
     public int SpaceCount() => AllParkingSpaces == null ? 0 : AllParkingSpaces.Count;

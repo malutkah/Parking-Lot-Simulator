@@ -32,7 +32,7 @@ public class VehicleManger : MonoBehaviour
         string platenumber = GeneratePlatenumber(vehicle.gameObject.name, index);
         vehicle.GetComponent<Vehicle>().Platenumber = platenumber;
 
-        Debug.Log(vehicle.GetComponent<Vehicle>().Platenumber);
+        //Debug.Log(vehicle.GetComponent<Vehicle>().Platenumber);
 
         SpawnVehicle(vehicle);
         MoveVehicle(vehicle);

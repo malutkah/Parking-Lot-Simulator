@@ -14,29 +14,43 @@ public class ParkingGarageManager : MonoBehaviour
      * 
      * instatiating new garage: y + 2
      */
+    public static ParkingGarageManager instance;
 
     public VehicleManger vehicleManger;
     public GameObject GaragePrefab;
     public GameObject ParkingSpacePrefab;
     public GameObject Building;
+    [HideInInspector] public GameObject vehicle;
     public int floorCount, parkingSpaceCountPerFloor;
     public int VehicleSpawnCount;
 
     private ParkingSpace space;
     private bool canSpawnVehicle;
+    private bool vehicleEntered;
     private GarageBuilding garageBuilding;
+    private int vehicleCount;
 
-    #region Unity [Start, Update]
+    #region Unity [Awake, Start, Update]
 
     private void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         garageBuilding = Building.GetComponent<GarageBuilding>();
     }
 
     void Start()
     {
-        CreateGarageBuilding(floorCount, parkingSpaceCountPerFloor);
         canSpawnVehicle = true;
+        vehicleCount = 0;
+        CreateGarageBuilding(floorCount, parkingSpaceCountPerFloor);
     }
 
     private void Update()
@@ -44,6 +58,12 @@ public class ParkingGarageManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Return) && canSpawnVehicle)
         {
             StartCoroutine(SpawnVehicle(VehicleSpawnCount));
+        }
+
+        if (vehicleEntered)
+        {
+            Debug.Log($"Vehicle [{vehicle.GetComponent<Vehicle>().Platenumber}] entered!");
+            vehicleEntered = false;
         }
     }
     #endregion
@@ -54,7 +74,8 @@ public class ParkingGarageManager : MonoBehaviour
         canSpawnVehicle = false;
         for (int i = 0; i < amount; i++)
         {
-            vehicleManger.CreateVehicle(space, i);
+            vehicleManger.CreateVehicle(space, vehicleCount);
+            vehicleCount++;
             yield return new WaitForSeconds(2f);
         }
         canSpawnVehicle = true;
@@ -143,5 +164,11 @@ public class ParkingGarageManager : MonoBehaviour
     private GameObject LoadPrefab(string path)
     {
         return Resources.Load<GameObject>(path);
+    }
+
+    public void VehicleEnteredGarage(GameObject v)
+    {
+        vehicle = v;
+        vehicleEntered = vehicle != null;
     }
 }

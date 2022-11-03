@@ -38,15 +38,20 @@ public class Vehicle : MonoBehaviour
     {
         if (collision.gameObject.tag == "Entrance")
         {
-            Debug.Log("Enter... lul");
             IsInGarage = true;
+
+            // if available
+            // give vehicle a parking space
+            /**
+             * choose a random floor
+             * choose a random space from that floor (floor.GetParkingSpaceName(rnd))
+             */
+            ParkingGarageManager.instance.VehicleEnteredGarage(gameObject);
 
             // disable vehicle
             gameObject.SetActive(!IsInGarage);
 
-            // if available
-                // give vehicle a parking space
-            // add vehicle to list
+            // add vehicle to space
         }
     }
 }

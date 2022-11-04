@@ -14,6 +14,7 @@ public class ParkingGarageManager : MonoBehaviour
      * 
      * instatiating new garage: y + 2
      */
+
     public static ParkingGarageManager instance;
 
     public VehicleManger vehicleManger;
@@ -71,7 +72,6 @@ public class ParkingGarageManager : MonoBehaviour
     }
     #endregion
 
-    // todo: corotine later
     private IEnumerator SpawnVehicle(int amount)
     {
         canSpawnVehicle = false;
@@ -110,7 +110,10 @@ public class ParkingGarageManager : MonoBehaviour
         ParkingGarage parkingGarage;
         // instantiate new garage prefab
         GameObject garageFloorToSpawn = LoadPrefab(garagePrefabPath);
-        GameObject garageFloor = Instantiate(garageFloorToSpawn, new Vector3(garageFloorToSpawn.transform.position.x, garageFloorToSpawn.transform.position.y + (2 * floorNo - 2), garageFloorToSpawn.transform.position.z), Quaternion.identity);
+
+        var pos = new Vector3(garageFloorToSpawn.transform.position.x, garageFloorToSpawn.transform.position.y + (2 * floorNo - 2), garageFloorToSpawn.transform.position.z);
+        GameObject garageFloor = Instantiate(garageFloorToSpawn, pos, Quaternion.identity);
+        
         garageFloor.transform.parent = Building.transform;
         garageFloor.transform.GetChild(0).gameObject.name = $"Floor_{floorNo}";
 
@@ -129,6 +132,7 @@ public class ParkingGarageManager : MonoBehaviour
         string path = "Prefabs/ParkingGarage/ParkingSpace";
         GameObject spaceToSpawn = LoadPrefab(path);
         GameObject space = Instantiate(spaceToSpawn);
+
         space.transform.parent = currentFloor.transform.GetChild(0).transform;
         ParkingSpace parkingSpace = space.GetComponent<ParkingSpace>();
 
@@ -177,6 +181,16 @@ public class ParkingGarageManager : MonoBehaviour
 
     public ParkingSpace ChooseParkingSpaceForVehicle()
     {
+        /*
+            - driver type W can ONLY park at W and N, never at D
+            - driver type D can park only a D
+            - driver type O can ONLY park at N
+        */
+
+        /*
+            - check before, if garage is full
+        */
+
         // get a random floor that isn't full
         System.Random fRng = new System.Random();
         Floor randomFloor = garageBuilding.AllFloors[fRng.Next(garageBuilding.AllFloors.Count)];
@@ -189,7 +203,6 @@ public class ParkingGarageManager : MonoBehaviour
         }
 
         // then get a random parking space that isn't occupied
-
         System.Random sRng = new System.Random();
         GameObject spaceGO = randomFloor.AllParkingSpaces[sRng.Next(garageBuilding.AllFloors.Count)];
         ParkingSpace space = spaceGO.GetComponent<ParkingSpace>();

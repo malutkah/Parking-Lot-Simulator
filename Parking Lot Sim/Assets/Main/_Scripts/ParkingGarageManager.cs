@@ -17,8 +17,10 @@ public class ParkingGarageManager : MonoBehaviour
 
     public static ParkingGarageManager instance;
 
+    public GameObject FloorScrollView;
     public VehicleManger vehicleManger;
     public GameObject GaragePrefab;
+    public GameObject ScrollViewPrefab;
     public GameObject ParkingSpacePrefab;
     public GameObject Building;
     public List<GameObject> AllVehicleInside;
@@ -27,9 +29,10 @@ public class ParkingGarageManager : MonoBehaviour
     public int VehicleSpawnCount;
 
     private ParkingSpace space;
+    private GarageBuilding garageBuilding;
+    private ScrollView floorScrollView;
     private bool canSpawnVehicle;
     private bool hasVehicleEntered;
-    private GarageBuilding garageBuilding;
     private int vehicleCount;
 
     #region Unity [Awake, Start, Update]
@@ -47,6 +50,7 @@ public class ParkingGarageManager : MonoBehaviour
 
         garageBuilding = Building.GetComponent<GarageBuilding>();
         AllVehicleInside = new List<GameObject>();
+        floorScrollView = FloorScrollView.GetComponent<ScrollView>();
     }
 
     void Start()
@@ -124,7 +128,21 @@ public class ParkingGarageManager : MonoBehaviour
         floor.FloorNumber = floorNo;
 
         garageBuilding.AllFloors.Add(floor);
+
+        // create new scroll view item
+        GameObject item = NewFloorScrollViewItem(floorNo, floor.AllParkingSpaces.Count, floor.AllParkingSpaces.Count);
+        // add floor to ScrollView
+        floorScrollView.Add(item);
+        
         return garageFloor;
+    }
+
+    private GameObject NewFloorScrollViewItem(int floorNo, int maxFloor, int freeFloors)
+    {
+        GameObject newScrollViewItem = Instantiate(ScrollViewPrefab);
+        FloorScrollViewItem item = newScrollViewItem.GetComponent<FloorScrollViewItem>();
+        item.NewItem(floorNo, maxFloor, freeFloors);
+        return newScrollViewItem;
     }
 
     private GameObject CreateParkingSpace(int spaceNo, int floorNo, GameObject currentFloor)
@@ -189,6 +207,7 @@ public class ParkingGarageManager : MonoBehaviour
 
         /*
             - check before, if garage is full
+            - update free space of floor
         */
 
         // get a random floor that isn't full

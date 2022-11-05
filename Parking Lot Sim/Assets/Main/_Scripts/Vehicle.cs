@@ -40,21 +40,12 @@ public class Vehicle : MonoBehaviour
         {
             IsInGarage = true;
 
-            ParkingGarageManager.instance.VehicleEnteredGarage(gameObject);
-
-            // if available
-            // give vehicle a parking space
-            /**
-             * choose a random floor
-             * choose a random space from that floor (floor.GetParkingSpaceName(rnd))
-             */
+            ParkingGarageManager.instance.VehicleEnteredGarage(gameObject);            
 
             Space = ParkingGarageManager.instance.ChooseParkingSpaceForVehicle();
 
             // disable vehicle
             gameObject.SetActive(!IsInGarage);
-
-            // add vehicle to space
         }
     }
 }

@@ -38,14 +38,26 @@ public class Vehicle : MonoBehaviour
     {
         if (collision.gameObject.tag == "Entrance")
         {
-            IsInGarage = true;
+            Space = ParkingGarageManager.instance.ChooseParkingSpaceForVehicle(gameObject);
 
-            ParkingGarageManager.instance.VehicleEnteredGarage(gameObject);            
-
-            Space = ParkingGarageManager.instance.ChooseParkingSpaceForVehicle();
-
-            // disable vehicle
+            if (Space == null)
+            {
+                Debug.LogError(" --- NO FREE SPACES AVAILABLE! --- ");
+                // exit car
+                IsInGarage = false;
+            }
+            else
+            {
+                IsInGarage = true;
+                ParkingGarageManager.instance.VehicleEnteredGarage(gameObject);
+            }
+            
             gameObject.SetActive(!IsInGarage);
+        }
+
+        if (collision.gameObject.tag == "ByeBye")
+        {
+            gameObject.SetActive(false);
         }
     }
 }

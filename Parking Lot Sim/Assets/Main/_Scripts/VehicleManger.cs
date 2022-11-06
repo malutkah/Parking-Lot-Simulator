@@ -7,6 +7,7 @@ public class VehicleManger : MonoBehaviour
 {
     public float MoveSpeed = 5f;
     public GameObject GarageEntrance;
+    public GameObject GarageExit;
 
     public void CreateVehicle(ParkingSpace space, int index)
     {
@@ -35,7 +36,26 @@ public class VehicleManger : MonoBehaviour
         //Debug.Log(vehicle.GetComponent<Vehicle>().Platenumber);
 
         SpawnVehicle(vehicle);
-        MoveVehicle(vehicle);
+        //MoveVehicle(vehicle);
+    }
+
+    public void ExitVehicle(GameObject vehicleToExit)
+    {
+        // set active = true
+        vehicleToExit.SetActive(true);
+        
+        // set vehicle position
+        var pos = vehicleToExit.transform.position;
+
+        vehicleToExit.transform.position = new Vector3(GarageExit.transform.position.x, pos.y, pos.z);
+        vehicleToExit.transform.Rotate(0f, 0f, -180.0f, UnityEngine.Space.Self);
+
+        // remove parking space from vehilce
+        // update parking space
+
+        // move vehicle out
+        MoveVehicle(vehicleToExit, -1);
+        //vehicleToExit.SetActive(false);
     }
 
     private Vehicles GetRandomVehicleType()
@@ -77,7 +97,7 @@ public class VehicleManger : MonoBehaviour
         {
             case Vehicles.CAR:
                 GameObject vehicle = Instantiate(vehicletoSpawn);
-                MoveVehicle(vehicle);
+                MoveVehicle(vehicle, 1);
                 break;
             case Vehicles.BIKE:
                 Debug.Log("BIKE");
@@ -105,9 +125,9 @@ public class VehicleManger : MonoBehaviour
         return $"{carName}-{Mathf.FloorToInt(code / (index + 1))}";
     }
 
-    private void MoveVehicle(GameObject vehicle)
+    private void MoveVehicle(GameObject vehicle, int dir)
     {
-        vehicle.GetComponent<Rigidbody>().AddForce(0, 0, MoveSpeed, ForceMode.Impulse);
+        vehicle.GetComponent<Rigidbody>().AddForce(0, 0, MoveSpeed * dir, ForceMode.Impulse);
 
     }
 }

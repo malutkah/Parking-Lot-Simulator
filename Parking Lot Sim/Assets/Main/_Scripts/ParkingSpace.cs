@@ -20,7 +20,6 @@ public class ParkingSpace : MonoBehaviour
     public int FloorNumber;
     public Space SpaceType;
 
-
     public string SpaceAsShortString(Space s) => s == Space.DISABLED ? "D" : s == Space.NORMAL ? "N" : "W";
 
     public string SpaceAsString(Space s) => s == Space.DISABLED ? "Disabled" : s == Space.NORMAL ? "Normal" : "Woman";

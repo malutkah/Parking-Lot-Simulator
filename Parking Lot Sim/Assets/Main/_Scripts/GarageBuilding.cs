@@ -24,7 +24,6 @@ public class GarageBuilding : MonoBehaviour
                 return false;
             }
         }
-
         return full;
     }
 

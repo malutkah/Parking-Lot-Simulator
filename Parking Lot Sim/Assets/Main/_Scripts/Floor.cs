@@ -30,6 +30,8 @@ public class Floor : MonoBehaviour
         return full;
     }
 
+    public ParkingSpace GetSpace(GameObject space) => space.GetComponent<ParkingSpace>();
+
     public string GetParkingSpaceName(int index)
     {
         ParkingSpace ps = AllParkingSpaces[index].GetComponent<ParkingSpace>();

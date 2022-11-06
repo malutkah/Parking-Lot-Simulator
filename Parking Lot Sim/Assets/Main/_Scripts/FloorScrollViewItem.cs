@@ -5,9 +5,9 @@ using TMPro;
 
 public class FloorScrollViewItem : MonoBehaviour
 {
-    public int floorNumber;
-    public int maxFloors;
-    public int freeFloors;
+    private int floorNumber;
+    private int maxFloors;
+    private int freeFloors;
     public TextMeshProUGUI floorText;
     public TextMeshProUGUI freeSpacesText;
 
@@ -18,6 +18,10 @@ public class FloorScrollViewItem : MonoBehaviour
         this.freeFloors = freeFloors;
 
         SetPrefabText();
+    }
+
+    public void UpdateItem(int freeFloors) {
+        freeSpacesText.text = $"{freeFloors} / {maxFloors}";
     }
 
     private void SetPrefabText()

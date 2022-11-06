@@ -7,7 +7,7 @@ public class ScrollView : MonoBehaviour
     public GameObject ScrollViewItemPrefab;
     public GameObject Content;
 
-    private List<GameObject> items;
+    public List<GameObject> items;
 
     #region Unity [Awake]
     private void Awake()
@@ -42,6 +42,7 @@ public class ScrollView : MonoBehaviour
     /// </summary>
     public void RemoveItem(int index)
     {
+        items.RemoveAt(index);
         Destroy(Content.transform.GetChild(index));
     }
 
@@ -50,6 +51,11 @@ public class ScrollView : MonoBehaviour
     /// </summary>
     public void RemoveItem(GameObject item)
     {
-
+        items.Remove(item);
     }
+
+    /// <summary>
+    /// Returns the FloorScrollViewItem Script
+    /// </summary>
+    public FloorScrollViewItem GetScrollViewItem(GameObject item) => item.GetComponent<FloorScrollViewItem>();
 }

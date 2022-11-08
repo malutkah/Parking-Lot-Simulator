@@ -43,7 +43,7 @@ public class VehicleManger : MonoBehaviour
     {
         // set active = true
         vehicleToExit.SetActive(true);
-        
+
         // set vehicle position
         var pos = vehicleToExit.transform.position;
 
@@ -52,10 +52,16 @@ public class VehicleManger : MonoBehaviour
 
         // remove parking space from vehilce
         // update parking space
+        var v = vehicleToExit.GetComponent<Vehicle>();
+
+        // have to check this, bc if garage is full, the vehicle has no space
+        if (v.Space != null)
+        {
+            v.Space.RemoveVehicle();
+        }
 
         // move vehicle out
-        MoveVehicle(vehicleToExit, -1);
-        //vehicleToExit.SetActive(false);
+        MoveVehicle(vehicleToExit, -2f);
     }
 
     private Vehicles GetRandomVehicleType()
@@ -125,7 +131,7 @@ public class VehicleManger : MonoBehaviour
         return $"{carName}-{Mathf.FloorToInt(code / (index + 1))}";
     }
 
-    private void MoveVehicle(GameObject vehicle, int dir)
+    private void MoveVehicle(GameObject vehicle, float dir)
     {
         vehicle.GetComponent<Rigidbody>().AddForce(0, 0, MoveSpeed * dir, ForceMode.Impulse);
 

@@ -14,23 +14,21 @@ public class FloorScrollViewItem : MonoBehaviour
 
     public void ItemOnClick()
     {
-        // save floor in FloorScrollViewItem
-
-        // if vehicle count > 0
-        // show all vehicle in floor
-        ParkingSpace space = null;
+        // clear vehicle scroll view
+        ParkingGarageManager.instance.ClearVehicleScrollView();
 
         if (floor.AllParkingSpaces.Count > 0)
         {
-
             for (int i = 0; i < floor.AllParkingSpaces.Count; i++)
             {
-                space = floor.AllParkingSpaces[i].GetComponent<ParkingSpace>();
-                ParkingGarageManager.instance.NewVehicleScrollViewItem(space.Vehicle.Platenumber, space.SpaceName);
+                ParkingSpace space = floor.AllParkingSpaces[i].GetComponent<ParkingSpace>();
+
+                if (space.IsOccupied)
+                    ParkingGarageManager.instance.NewVehicleScrollViewItem(space.Vehicle.Platenumber, space.SpaceName, i, space.VehicleGO, this);
             }
         }
 
-        Debug.Log($"Selected Floor {floor.FloorNumber} with {floor.AllParkingSpaces.Count} spaces");
+        //Debug.Log($"Selected Floor {floor.FloorNumber} with {floor.AllParkingSpaces.Count} spaces");
     }
 
     public void NewItem(int floorNo, int maxFloors, int freeFloors)

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ScrollView : MonoBehaviour
 {
-    public GameObject ScrollViewItemPrefab;
     public GameObject Content;
 
     public List<GameObject> items;
@@ -15,6 +14,22 @@ public class ScrollView : MonoBehaviour
         items = new List<GameObject>();
     }
     #endregion
+
+    public bool ContainsPlatenumber(string platenumber)
+    {
+        bool contains = false;
+        foreach (var item in items)
+        {
+            var s = item.GetComponent<VehicleScrollViewItem>();
+            if (s.PlatenumberText.text == platenumber)
+            {
+                contains = true;
+                break;
+            }
+        }
+
+        return contains;
+    }
 
     /// <summary>
     /// Adds a GameObject to ScrollView
@@ -30,11 +45,15 @@ public class ScrollView : MonoBehaviour
     /// </summary>
     public void Clear()
     {
-        for (int i = 0; i < items.Count; i++)
+        if (items.Count > 0)
         {
-            Destroy(Content.transform.GetChild(i));
+            for (int i = 0; i < items.Count; i++)
+            {
+                Destroy(Content.transform.GetChild(i).gameObject);
+            }
+
+            items.Clear();
         }
-        items.Clear();
     }
 
     /// <summary>
@@ -52,6 +71,7 @@ public class ScrollView : MonoBehaviour
     public void RemoveItem(GameObject item)
     {
         items.Remove(item);
+        Destroy(item);
     }
 
     /// <summary>

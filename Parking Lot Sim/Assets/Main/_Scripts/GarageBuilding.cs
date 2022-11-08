@@ -28,4 +28,19 @@ public class GarageBuilding : MonoBehaviour
     }
 
     public int FloorCount() => AllFloors == null ? 0 : AllFloors.Count;
+
+    public int GetTotalFreeSpaceCount()
+    {
+        int count = 0;
+
+        foreach (Floor floor in AllFloors)
+        {
+            if (!floor.IsFloorFull())
+            {
+                count += floor.CountFreeSpaces();
+            }
+        }
+
+        return count;
+    }
 }

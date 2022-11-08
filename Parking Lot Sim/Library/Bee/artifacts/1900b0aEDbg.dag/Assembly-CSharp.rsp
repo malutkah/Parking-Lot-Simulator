@@ -363,6 +363,7 @@
 "Assets/Main/_Scripts/ParkingSpace.cs"
 "Assets/Main/_Scripts/UI/FloorScrollViewItem.cs"
 "Assets/Main/_Scripts/UI/ScrollView.cs"
+"Assets/Main/_Scripts/UI/UiManager.cs"
 "Assets/Main/_Scripts/UI/VehicleScrollViewItem.cs"
 "Assets/Main/_Scripts/Vehicle.cs"
 "Assets/Main/_Scripts/VehicleManger.cs"

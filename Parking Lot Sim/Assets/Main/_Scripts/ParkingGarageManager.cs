@@ -17,9 +17,9 @@ public class ParkingGarageManager : MonoBehaviour
 
     public static ParkingGarageManager instance;
 
+    public VehicleManger vehicleManger;
     public GameObject FloorScrollView;
     public GameObject VehicleScrollView;
-    public VehicleManger vehicleManger;
     public GameObject GaragePrefab;
     public GameObject ScrollViewPrefab;
     public GameObject VehicleScrollViewPrefab;
@@ -34,6 +34,7 @@ public class ParkingGarageManager : MonoBehaviour
     private GarageBuilding garageBuilding;
     private ScrollView floorScrollView;
     private ScrollView vehicleScrollView;
+    private UiManager ui;
     private bool canSpawnVehicle;
     private bool hasVehicleEntered;
     private int vehicleCount;
@@ -56,6 +57,7 @@ public class ParkingGarageManager : MonoBehaviour
         AllVehicleInside = new List<GameObject>();
         floorScrollView = FloorScrollView.GetComponent<ScrollView>();
         vehicleScrollView = VehicleScrollView.GetComponent<ScrollView>();
+        ui = gameObject.GetComponent<UiManager>();
     }
 
     void Start()
@@ -63,6 +65,8 @@ public class ParkingGarageManager : MonoBehaviour
         canSpawnVehicle = true;
         vehicleCount = 0;
         CreateGarageBuilding(floorCount, parkingSpaceCountPerFloor);
+
+        // set ui text
     }
 
     private void Update()
@@ -78,6 +82,8 @@ public class ParkingGarageManager : MonoBehaviour
             AllVehicleInside.Add(currentlyEnteredVehicle);
             hasVehicleEntered = false;
         }
+
+        ui.SetGarageInfoText(garageBuilding.AllFloors.Count, garageBuilding.GetTotalFreeSpaceCount(), vehicleCount, 0);
     }
     #endregion
 
@@ -92,6 +98,11 @@ public class ParkingGarageManager : MonoBehaviour
         }
 
         canSpawnVehicle = true;
+    }
+
+    public Floor GetFloorFromNumber(int floorNumber)
+    {
+        return garageBuilding.AllFloors.Find(f => f.FloorNumber == floorNumber);
     }
 
     #region Creating new Garage building
@@ -124,7 +135,7 @@ public class ParkingGarageManager : MonoBehaviour
         var newY = 2 * floorNo - 2;
         var pos = new Vector3(garageFloorToSpawn.transform.position.x, garageFloorToSpawn.transform.position.y + newY, garageFloorToSpawn.transform.position.z);
         GameObject garageFloor = Instantiate(garageFloorToSpawn, pos, Quaternion.identity);
-        
+
         garageFloor.transform.parent = Building.transform;
         garageFloor.transform.GetChild(0).gameObject.name = $"Floor_{floorNo}";
 
@@ -140,8 +151,17 @@ public class ParkingGarageManager : MonoBehaviour
         GameObject item = NewFloorScrollViewItem(floorNo, parkingSpaceCountPerFloor, parkingSpaceCountPerFloor, floor);
         // add floor to ScrollView
         floorScrollView.Add(item);
-        
+
         return garageFloor;
+    }
+
+    #endregion
+
+    #region Scroll View
+    
+    public void UpdateFreeFloorSpaces()
+    {
+
     }
 
     private GameObject NewFloorScrollViewItem(int floorNo, int maxFloor, int freeFloors, Floor f)
@@ -153,15 +173,28 @@ public class ParkingGarageManager : MonoBehaviour
         return newScrollViewItem;
     }
 
-    public void NewVehicleScrollViewItem(string platenumber, string spaceName)
+    public void ClearVehicleScrollView()
     {
-        // no duplicate items
         vehicleScrollView.Clear();
+    }
+
+    public void RemoveVehicleScrollViewItem(GameObject v)
+    {
+        vehicleScrollView.RemoveItem(v);
+        freeParkingSpaces -= 1;
+    }
+
+    // floor scroll view on item click 
+    public void NewVehicleScrollViewItem(string platenumber, string spaceName, int index, GameObject v, FloorScrollViewItem floorScrollViewItem)
+    {
         GameObject newScrollViewItem = Instantiate(VehicleScrollViewPrefab);
         VehicleScrollViewItem item = newScrollViewItem.GetComponent<VehicleScrollViewItem>();
-        item.NewItem(platenumber, spaceName);
+        item.NewItem(platenumber, spaceName, index, v, floorScrollViewItem);
         vehicleScrollView.Add(newScrollViewItem);
     }
+    #endregion
+
+    #region Parking Space
 
     private GameObject CreateParkingSpace(int spaceNo, int floorNo, GameObject currentFloor)
     {
@@ -194,7 +227,6 @@ public class ParkingGarageManager : MonoBehaviour
 
         return $"{floorNo}-{spaceNo}-{spaceType}";
     }
-    #endregion
 
     private Space GetRandomSpaceType()
     {
@@ -243,7 +275,7 @@ public class ParkingGarageManager : MonoBehaviour
 
             // then get a random parking space that isn't occupied
             System.Random sRng = new System.Random();
-            GameObject spaceGO = randomFloor.AllParkingSpaces[sRng.Next(garageBuilding.AllFloors.Count)];
+            GameObject spaceGO = randomFloor.AllParkingSpaces[sRng.Next(randomFloor.AllParkingSpaces.Count)];
             ParkingSpace space = spaceGO.GetComponent<ParkingSpace>();
 
             while (space.IsOccupied)
@@ -255,6 +287,7 @@ public class ParkingGarageManager : MonoBehaviour
 
             space.Vehicle = v.GetComponent<Vehicle>();
             space.IsOccupied = true;
+            space.VehicleGO = v;
 
             Debug.Log($"Vehicle [{v.GetComponent<Vehicle>().Platenumber}] is at Parking space [{space.SpaceName}]");
 
@@ -277,9 +310,9 @@ public class ParkingGarageManager : MonoBehaviour
     {
         int count = 0;
 
-        foreach(GameObject space in f.AllParkingSpaces)
+        foreach (GameObject space in f.AllParkingSpaces)
         {
-            if (!f.GetSpace(space).IsOccupied) 
+            if (!f.GetSpace(space).IsOccupied)
             {
                 count++;
             }
@@ -287,4 +320,5 @@ public class ParkingGarageManager : MonoBehaviour
         return count;
     }
 
+    #endregion
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Floor : MonoBehaviour
@@ -28,6 +29,19 @@ public class Floor : MonoBehaviour
         }
 
         return full;
+    }
+
+    public int CountFreeSpaces()
+    {
+        int count = 0;
+        foreach (GameObject ps in AllParkingSpaces)
+        {            
+            if (!ps.GetComponent<ParkingSpace>().IsOccupied)
+            {
+                count++;
+            }
+        }
+        return count;
     }
 
     public ParkingSpace GetSpace(GameObject space) => space.GetComponent<ParkingSpace>();

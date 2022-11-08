@@ -16,6 +16,7 @@ public class ParkingSpace : MonoBehaviour
 
     public string SpaceName;
     public Vehicle Vehicle;
+    public GameObject VehicleGO;
     public bool IsOccupied;
     public int FloorNumber;
     public Space SpaceType;
@@ -24,4 +25,10 @@ public class ParkingSpace : MonoBehaviour
 
     public string SpaceAsString(Space s) => s == Space.DISABLED ? "Disabled" : s == Space.NORMAL ? "Normal" : "Woman";
 
+    public void RemoveVehicle()
+    {
+        Vehicle = null;
+        VehicleGO = null;
+        IsOccupied = false;
+    }
 }

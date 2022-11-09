@@ -37,7 +37,7 @@ public class VehicleManger : MonoBehaviour
 
         SpawnVehicle(vehicle);
 
-        return vehicle
+        return vehicle;
         //MoveVehicle(vehicle);
     }
 

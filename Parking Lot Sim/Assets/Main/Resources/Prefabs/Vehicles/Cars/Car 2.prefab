@@ -413,7 +413,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 199be5fc241c8f84cbff3941e6b62c5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Platenumber: 
+  Platenumber: Car-W-7-2258
   IsInGarage: 0
   VehicleType: 0
   DriverType: 0

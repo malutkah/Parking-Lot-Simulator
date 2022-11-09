@@ -9,7 +9,7 @@ public class VehicleManger : MonoBehaviour
     public GameObject GarageEntrance;
     public GameObject GarageExit;
 
-    public void CreateVehicle(ParkingSpace space, int index)
+    public GameObject CreateVehicle(ParkingSpace space, int index)
     {
         string vehiclePrefabPath = "Prefabs/Vehicles/Cars/";
 
@@ -36,6 +36,8 @@ public class VehicleManger : MonoBehaviour
         //Debug.Log(vehicle.GetComponent<Vehicle>().Platenumber);
 
         SpawnVehicle(vehicle);
+
+        return vehicle
         //MoveVehicle(vehicle);
     }
 

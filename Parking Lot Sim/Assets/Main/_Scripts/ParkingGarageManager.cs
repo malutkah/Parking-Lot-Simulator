@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class ParkingGarageManager : MonoBehaviour
 {
@@ -29,12 +30,14 @@ public class ParkingGarageManager : MonoBehaviour
     [HideInInspector] public GameObject currentlyEnteredVehicle;
     public int floorCount, parkingSpaceCountPerFloor;
     public int VehicleSpawnCount;
+    public TextMeshProUGUI NewFloorCountInput;
 
     private ParkingSpace space;
     private GarageBuilding garageBuilding;
     private ScrollView floorScrollView;
     private ScrollView vehicleScrollView;
     private UiManager ui;
+    private List<GameObject> allVehicles;
     private bool canSpawnVehicle;
     private bool hasVehicleEntered;
     private int vehicleCount;
@@ -58,6 +61,7 @@ public class ParkingGarageManager : MonoBehaviour
         floorScrollView = FloorScrollView.GetComponent<ScrollView>();
         vehicleScrollView = VehicleScrollView.GetComponent<ScrollView>();
         ui = gameObject.GetComponent<UiManager>();
+        allVehicles = new List<GameObject>();
     }
 
     void Start()
@@ -83,8 +87,34 @@ public class ParkingGarageManager : MonoBehaviour
             hasVehicleEntered = false;
         }
 
-        ui.SetGarageInfoText(garageBuilding.AllFloors.Count, garageBuilding.GetTotalFreeSpaceCount(), vehicleCount, 0);
+        ui.SetGarageInfoText(garageBuilding.AllFloors.Count, garageBuilding.GetTotalFreeSpaceCount(), vehicleCount, 0, parkingSpaceCountPerFloor * floorCount);
     }
+    #endregion
+
+
+    #region Button clicks
+    public void ShowAllVehiclesInScrollView()
+    {
+        for (int i = 0; i < vehicleCount; i++)
+        {
+            // klappt nicht
+            vehicleScrollView.Add(allVehicles[i]);
+        }
+    }
+
+    public void ChangeFloorCountClick()
+    {
+        // save vehicle spaces and such
+        // check if space/floor still exists, like when the floorCount is smaller than before (5 -> 2)
+        // vehicles without valid space gotta leave
+
+        int newFloorCount = int.Parse(NewFloorCountInput.text);
+
+
+        CreateGarageBuilding(newFloorCount, parkingSpaceCountPerFloor);
+        
+    }
+
     #endregion
 
     private IEnumerator SpawnVehicle(int amount)
@@ -92,7 +122,7 @@ public class ParkingGarageManager : MonoBehaviour
         canSpawnVehicle = false;
         for (int i = 0; i < amount; i++)
         {
-            vehicleManger.CreateVehicle(space, vehicleCount);
+            allVehicles.Add(vehicleManger.CreateVehicle(space, vehicleCount));
             vehicleCount++;
             yield return new WaitForSeconds(1f);
         }
@@ -159,11 +189,6 @@ public class ParkingGarageManager : MonoBehaviour
 
     #region Scroll View
     
-    public void UpdateFreeFloorSpaces()
-    {
-
-    }
-
     private GameObject NewFloorScrollViewItem(int floorNo, int maxFloor, int freeFloors, Floor f)
     {
         GameObject newScrollViewItem = Instantiate(ScrollViewPrefab);

@@ -9,15 +9,15 @@ public class UiManager : MonoBehaviour
     public TextMeshProUGUI FreeSpacesCountText;
     public TextMeshProUGUI CarCountText;
     public TextMeshProUGUI BikeCountText;
-    public TextMeshProUGUI GarageSpaceText;
+    public TextMeshPro GarageSpaceText;
 
-    public void SetGarageInfoText(int floorCount, int freeSpaces, int carCount, int bikeCount)
+    public void SetGarageInfoText(int floorCount, int freeSpaces, int carCount, int bikeCount, int allSpaces)
     {
         FloorCountText.text = $"{floorCount}";
         FreeSpacesCountText.text = $"{freeSpaces}";
         CarCountText.text = $"{carCount}";
         BikeCountText.text = $"{bikeCount}";
 
-        GarageSpaceText.text = $"";
+        GarageSpaceText.text = $"{freeSpaces} / {allSpaces}";
     }
 }

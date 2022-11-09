@@ -11,12 +11,13 @@ public class VehicleManger : MonoBehaviour
 
     public GameObject CreateVehicle(ParkingSpace space, int index)
     {
-        string vehiclePrefabPath = "Prefabs/Vehicles/Cars/";
+        string vehiclePrefabPathCar = "Prefabs/Vehicles/Cars/";
+        string vehiclePrefabPathBike = "Prefabs/Vehicles/Bikes/";
 
         // isInGarage = false
 
         // pick random Vehicle type
-        Vehicles vehicles = Vehicles.CAR; //GetRandomVehicleType();
+        Vehicles vehicles = GetRandomVehicleType();
 
         // pick random Driver type
         Driver driver = GetRandomDriverType();
@@ -24,10 +25,11 @@ public class VehicleManger : MonoBehaviour
         // choose car prefab (for path)
         int random = UnityEngine.Random.Range(1, 3);
         string carPrefabName = $"Car {random}";
+        string bikePrefabName = $"Bike";
 
-        vehiclePrefabPath = vehicles == Vehicles.CAR ? vehiclePrefabPath + carPrefabName : vehicles == Vehicles.BIKE ? "blub" : "other";
+        vehiclePrefabPathCar = vehicles == Vehicles.CAR ? vehiclePrefabPathCar + carPrefabName : vehicles == Vehicles.BIKE ? vehiclePrefabPathBike + bikePrefabName : vehiclePrefabPathCar + carPrefabName;
 
-        GameObject vehicle = LoadVehicle(vehiclePrefabPath, false, vehicles, driver, index, space);
+        GameObject vehicle = LoadVehicle(vehiclePrefabPathCar, false, vehicles, driver, index, space);
 
         // generate platenumber
         string platenumber = GeneratePlatenumber(vehicle.gameObject.name, index);
@@ -64,6 +66,7 @@ public class VehicleManger : MonoBehaviour
 
         // move vehicle out
         MoveVehicle(vehicleToExit, -2f);
+
     }
 
     private Vehicles GetRandomVehicleType()
@@ -108,10 +111,12 @@ public class VehicleManger : MonoBehaviour
                 MoveVehicle(vehicle, 1);
                 break;
             case Vehicles.BIKE:
-                Debug.Log("BIKE");
+                vehicle = Instantiate(vehicletoSpawn);
+                MoveVehicle(vehicle, 1);
                 break;
             case Vehicles.OTHER:
-                Debug.Log("OTHER");
+                vehicle = Instantiate(vehicletoSpawn);
+                MoveVehicle(vehicle, 1);
                 break;
             default:
                 break;

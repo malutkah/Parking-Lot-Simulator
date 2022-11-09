@@ -31,6 +31,11 @@ public class ScrollView : MonoBehaviour
         return contains;
     }
 
+    public int Count()
+    {
+        return items.Count;
+    }
+
     /// <summary>
     /// Adds a GameObject to ScrollView
     /// </summary>
@@ -61,8 +66,8 @@ public class ScrollView : MonoBehaviour
     /// </summary>
     public void RemoveItem(int index)
     {
+        Destroy(Content.transform.GetChild(index).gameObject);
         items.RemoveAt(index);
-        Destroy(Content.transform.GetChild(index));
     }
 
     /// <summary>

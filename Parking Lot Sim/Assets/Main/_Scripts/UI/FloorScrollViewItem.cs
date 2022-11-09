@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.EventSystems;
 
-public class FloorScrollViewItem : MonoBehaviour
+public class FloorScrollViewItem : MonoBehaviour, IPointerClickHandler
 {
     private int floorNumber;
     private int maxFloors;
@@ -11,6 +12,12 @@ public class FloorScrollViewItem : MonoBehaviour
     public TextMeshProUGUI floorText;
     public TextMeshProUGUI freeSpacesText;
     public Floor floor;
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        // remove
+        //ParkingGarageManager.instance.RemoveFloorScrollViewItem(gameObject, floorNumber);
+    }
 
     public void ItemOnClick()
     {
@@ -42,6 +49,12 @@ public class FloorScrollViewItem : MonoBehaviour
 
     public void UpdateItem(int freeFloors)
     {
+        freeSpacesText.text = $"{freeFloors} / {maxFloors}";
+    }
+
+    public void UpdateItem(int freeFloors, int floorNo)
+    {
+        floorText.text = $"Etage {floorNo}";
         freeSpacesText.text = $"{freeFloors} / {maxFloors}";
     }
 

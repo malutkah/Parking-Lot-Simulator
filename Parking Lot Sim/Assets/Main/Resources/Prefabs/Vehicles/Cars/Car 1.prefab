@@ -80,10 +80,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 199be5fc241c8f84cbff3941e6b62c5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Platenumber: Car-W-8-1980
+  Platenumber: Car-O-11-1533
   IsInGarage: 0
   VehicleType: 0
-  DriverType: 0
+  DriverType: 1
   Space: {fileID: 0}
   Speed: 0
   Entrance: {fileID: 0}

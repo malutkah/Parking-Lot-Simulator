@@ -69,6 +69,11 @@ public class VehicleManger : MonoBehaviour
 
     }
 
+    public Vehicles GetVehicleType(GameObject vehicle)
+    {
+        return vehicle.GetComponent<Vehicle>().VehicleType;
+    }
+
     private Vehicles GetRandomVehicleType()
     {
         Array vValues = Enum.GetValues(typeof(Vehicles));

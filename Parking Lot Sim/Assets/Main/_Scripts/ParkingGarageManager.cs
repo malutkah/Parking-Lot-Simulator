@@ -28,12 +28,12 @@ public class ParkingGarageManager : MonoBehaviour
     public GameObject ParkingSpacePrefab;
     public GameObject Building;
     public List<GameObject> AllVehicleInside;
-    [HideInInspector] public GameObject currentlyEnteredVehicle;
     public int floorCount, parkingSpaceCountPerFloor;
     public int VehicleSpawnCount;
     public TMP_InputField NewFloorCountInput, VehicleSpawnInputField;
     public TMP_InputField FloorCountInputField, SpaceCountInputField;
 
+    private GameObject currentlyEnteredVehicle;
     private ParkingSpace space;
     private GarageBuilding garageBuilding;
     private ScrollView floorScrollView;
@@ -42,7 +42,7 @@ public class ParkingGarageManager : MonoBehaviour
     private List<GameObject> allVehicles;
     private bool canSpawnVehicle, canBuild;
     private bool hasVehicleEntered;
-    private int vehicleCount;
+    private int carCount, bikeCount;
     private int freeParkingSpaces;
 
     #region Unity [Awake, Start, Update]
@@ -70,7 +70,8 @@ public class ParkingGarageManager : MonoBehaviour
     {
         canSpawnVehicle = false;
         canBuild = true;
-        vehicleCount = 0;
+        carCount = 0;
+        bikeCount = 0;
         //CreateGarageBuilding(floorCount, parkingSpaceCountPerFloor);
     }
 
@@ -86,7 +87,7 @@ public class ParkingGarageManager : MonoBehaviour
             //Debug.Log($"Vehicle [{currentlyEnteredVehicle.GetComponent<Vehicle>().Platenumber}] entered!");
             AllVehicleInside.Add(currentlyEnteredVehicle);
             hasVehicleEntered = false;
-            ui.SetGarageInfoText(garageBuilding.AllFloors.Count, garageBuilding.GetTotalFreeSpaceCount(), vehicleCount, 0, parkingSpaceCountPerFloor * floorCount);
+            ui.SetGarageInfoText(garageBuilding.AllFloors.Count, garageBuilding.GetTotalFreeSpaceCount(), carCount, bikeCount, parkingSpaceCountPerFloor * floorCount);
         }
 
         //ui.SetGarageInfoText(garageBuilding.AllFloors.Count, garageBuilding.GetTotalFreeSpaceCount(), vehicleCount, 0, parkingSpaceCountPerFloor * floorCount);
@@ -107,7 +108,7 @@ public class ParkingGarageManager : MonoBehaviour
 
             CreateGarageBuilding(floorCount, parkingSpaceCount);
 
-            ui.SetGarageInfoText(garageBuilding.AllFloors.Count, garageBuilding.GetTotalFreeSpaceCount(), vehicleCount, 0, parkingSpaceCount * floorCount);
+            ui.SetGarageInfoText(garageBuilding.AllFloors.Count, garageBuilding.GetTotalFreeSpaceCount(), carCount, bikeCount, parkingSpaceCount * floorCount);
 
             canSpawnVehicle = true;
             canBuild = false;
@@ -126,7 +127,7 @@ public class ParkingGarageManager : MonoBehaviour
 
     public void ShowAllVehiclesInScrollView()
     {
-        for (int i = 0; i < vehicleCount; i++)
+        for (int i = 0; i < carCount; i++)
         {
             // klappt nicht
             vehicleScrollView.Add(allVehicles[i]);
@@ -156,7 +157,7 @@ public class ParkingGarageManager : MonoBehaviour
         floorScrollView.RemoveItem(floorScrollView.Count() - 1);
         CreateGarageBuilding(1, parkingSpaceCountPerFloor);
         floorCount++;
-        ui.SetGarageInfoText(garageBuilding.AllFloors.Count, garageBuilding.GetTotalFreeSpaceCount(), vehicleCount, 0, parkingSpaceCountPerFloor * floorCount);
+        ui.SetGarageInfoText(garageBuilding.AllFloors.Count, garageBuilding.GetTotalFreeSpaceCount(), carCount, bikeCount, parkingSpaceCountPerFloor * floorCount);
         Debug.Log("Added floor");
     }
 
@@ -174,8 +175,8 @@ public class ParkingGarageManager : MonoBehaviour
         canSpawnVehicle = false;
         for (int i = 0; i < amount; i++)
         {
-            allVehicles.Add(vehicleManger.CreateVehicle(space, vehicleCount));
-            vehicleCount++;
+            allVehicles.Add(vehicleManger.CreateVehicle(space, carCount));
+
             yield return new WaitForSeconds(1f);
         }
 
@@ -347,6 +348,16 @@ public class ParkingGarageManager : MonoBehaviour
     public void VehicleEnteredGarage(GameObject v)
     {
         currentlyEnteredVehicle = v;
+
+        if (vehicleManger.GetVehicleType(currentlyEnteredVehicle) is Vehicles.CAR or Vehicles.OTHER)
+        {
+            carCount++;
+        }
+        else
+        {
+            bikeCount++;
+        }
+
         hasVehicleEntered = v != null;
     }
 
